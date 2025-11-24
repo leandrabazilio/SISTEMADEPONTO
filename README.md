@@ -55,5 +55,16 @@ As ações permitidas dentro do sistema dependem do perfil registrado:
 * *Regra de Permissão:* Este é o único perfil que possui acesso total e irrestrito aos dados de controle de ponto.
 
 ---
----
-e  é focado na marcação de **Entrada** ou **Saída** de forma simples.
+## 🛠️ Como Instalar e Executar (Guia Rápido)
+
+Siga estes passos para ter o projeto rodando em seu ambiente local usando o XAMPP.
+
+### Pré-requisitos
+* *XAMPP* (ou WAMPP/MAMP) instalado e configurado.
+
+### 1. 📥 Obter o Código-Fonte
+
+Use o Git para clonar o repositório em sua máquina:
+
+```bash
+git clone [https://github.com/leandrabrazilio/SISTEMADEPONTO.git](https://github.com/leandrabrazilio/SISTEMADEPONTO.git)
