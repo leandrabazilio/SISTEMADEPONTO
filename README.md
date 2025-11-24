@@ -65,6 +65,6 @@ Siga estes passos para ter o projeto rodando em seu ambiente local usando o XAMP
 ### 1. 📥 Obter o Código-Fonte
 
 Use o Git para clonar o repositório em sua máquina:
-
 ```bash
 git clone https://github.com/leandrabrazilio/SISTEMADEPONTO.git
+```
