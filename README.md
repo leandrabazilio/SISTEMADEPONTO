@@ -46,8 +46,6 @@ As ações permitidas dentro do sistema dependem do que está registrado no banc
 
 #### A. Perfil: Empregado (tipo = empregador)
 
-Este perfil acessa a área de ponto.php e é focado na marcação de sua própria jornada.
-
 * *Funcionalidade Principal (Registro de Ponto):* Permite ao empregado registrar sua marcação de *Entrada* ou *Saída* de forma simples.
 * *Regra de Negócio Chave (Alternância de Ponto):* O sistema impõe a lógica da jornada: *não é permitido* registrar duas Entradas consecutivas, nem duas Saídas consecutivas. O sistema garante que a marcação registrada seja sempre a próxima ação lógica.
 
