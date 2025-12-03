@@ -1,6 +1,125 @@
-main.home {
-  margin-left: 60px; /* espaço para não ficar embaixo do menu */
+/* Estilo principal para a área de conteúdo */
+main.conteudo {
+  margin-left: 80px; /* Ajuste para o menu lateral */
   padding: 20px;
-  background: #fff;
-  min-height: 400px;
+  transition: margin-left .2s;
+  background-color: #f8f9fa; /* Cor de fundo suave para a área de conteúdo */
+  min-height: calc(100vh - 120px); /* Ocupa a altura da tela menos topo e rodapé */
+}
+
+nav.menu-lateral.expandir ~ main.conteudo {
+  margin-left: 320px; /* Ajuste quando o menu expande */
+}
+
+/* Card de conteúdo para centralização e estilo */
+.content-card {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 20px auto; /* Centraliza o card */
+}
+
+.content-card h2 {
+  color: #e91e63; /* Cor principal do tema */
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f48fb1;
+}
+
+/* --- Estilos da Página HOME --- */
+.painel-botoes {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.painel-botoes button {
+  padding: 15px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  transition: background-color 0.3s, transform 0.2s;
+}
+.painel-botoes button:hover {
+  transform: translateY(-2px);
+}
+.btn-entrada { background-color: #28a745; }
+.btn-entrada:hover { background-color: #218838; }
+.btn-saida { background-color: #dc3545; }
+.btn-saida:hover { background-color: #c82333; }
+.btn-pausa { background-color: #ffc107; color: #333; }
+.btn-pausa:hover { background-color: #e0a800; }
+
+/* --- Estilos da Página PONTOS (Relatório) --- */
+.tabela-pontos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.tabela-pontos th, .tabela-pontos td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+.tabela-pontos th {
+  background-color: #f48fb1; /* Cor secundária do tema */
+  color: white;
+  font-weight: bold;
+}
+.tabela-pontos tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* --- Estilos da Página PERFIL --- */
+.form-perfil label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+.form-perfil input[type="text"],
+.form-perfil input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.form-perfil input:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+.form-perfil button {
+  background-color: #e91e63; /* Cor principal do tema */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+.form-perfil button:hover {
+  background-color: #c2185b; /* Tom mais escuro para hover */
+}
+
+/* --- Estilos para mensagens de feedback --- */
+.message {
+  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+.msg-sucesso, .message.success {
+  background-color: #d4edda; color: #155724;
+}
+.msg-erro, .message.error {
+  background-color: #f8d7da; color: #721c24;
 }

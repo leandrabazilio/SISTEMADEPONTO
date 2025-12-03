@@ -2,7 +2,6 @@
 
 require_once 'conexao.php'; 
 header('Content-Type: application/json');
-session_start();
 
 // Redireciona se já estiver logado
 if (isset($_SESSION['usuario_id'])) {
@@ -24,9 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$data = json_decode(file_get_contents("php://input", true));
+$data = json_decode(file_get_contents("php://input"), true); // O segundo parâmetro deve ser 'true' para obter um array associativo
 
-$login_digitado = trim ($data["login"] ?? "");
+$login_digitado = trim($data["login"] ?? "");
 $senha_digitada = $data["senha"] ?? "";
 
 try {

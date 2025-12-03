@@ -14,14 +14,15 @@
 
 nav.menu-lateral{
     height: calc(100% - 120px);
+    overflow-y: auto;
     width: 60px;
     background-color: #f48fb1;
     padding: 40px 0 40px 0.5%;
     box-shadow: 3px 0 0 #ffebee;
 
-    position: fixed;
+    position: absolute;
     top: 65px;
-    left: 0;
+    left: 60px;
     overflow: hidden;
     transition: .2s;
 }

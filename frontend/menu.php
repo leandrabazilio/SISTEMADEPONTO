@@ -4,28 +4,31 @@
         <i class="bi bi-three-dots-vertical" id="btn-exp"></i>
     </div> 
     <ul>
-        <li class="nav-item ativo">
-            <a class="nav-link active" href="?pg=home">
+        <li class="nav-item">
+            <a class="nav-link active" href="painel.php?pg=home">
                 <span class="icon"><i class="bi bi-house"></i></span>
                 <span class="txt-link">Home</span>
             </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" href="?pg=quemsomos">
-                <span class="icon"><i class="bi bi-clipboard2-fill"></i></span>
-                <span class="txt-link">Conteúdo</span>
+                <a class="nav-link" href="painel.php?pg=pontos">
+                    <span class="icon"><i class="bi bi-clipboard2-data-fill"></i></span>
+                    <span class="txt-link">Relatório de Pontos</span>
+                </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="painel.php?pg=perfil">
+                <span class="icon"><i class="bi bi-person-circle"></i></span>
+                <span class="txt-link">Meu Perfil</span>
             </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" href="?pg=clientes">
-                <span class="icon"><i class="bi bi-person"></i></span>
-                <span class="txt-link">Clientes</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="?pg=faleconosco">
-                <span class="icon"><i class="bi bi-chat-square-text-fill"></i></span>
-                <span class="txt-link">Fale Conosco</span>
+            <a class="nav-link" href="#" id="logout-btn">
+                <span class="icon"><i class="bi bi-box-arrow-right"></i></span>
+                <span class="txt-link">Sair</span>
             </a>
         </li>
     </ul>
@@ -33,3 +36,16 @@
 </aside>
 <script src="menu.js"></script>
 <script src="click.js"></script>
+
+<script>
+document.getElementById('logout-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    fetch('../sistemadeponto/logout.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                window.location.href = 'index.php'; // Redireciona para o login
+            }
+        });
+});
+</script>

@@ -63,17 +63,56 @@
 <body>
   <div class="container">
   <h2>Login</h2>
-  <form action="login.php" method="post">
-    <label for="usuario">Usuário:</label>
-    <input type="text" id="usuario" name="usuario" required><br><br>
+  <div id="mensagemErro" class="message" style="color: red;"></div>
+  <form id="formLogin" action="../sistemadeponto/login.php" method="post">
+    <label for="login">Usuário:</label>
+    <input type="text" id="login" name="login" required><br><br>
 
     <label for="senha">Senha:</label>
     <input type="password" id="senha" name="senha" required><br><br>
 
-    <button type="submit">Entrar</button>
+    <button type="submit" id="loginButton">Entrar</button>
 
     <p style="text-align: center; margin-top: 20px;"><a href="cadastro.php">Cadastre-se</a></p>
   </form>
       </div>
+
+  <script>
+    document.getElementById('formLogin').addEventListener('submit', function(event) {
+        event.preventDefault(); // Impede o envio padrão do formulário
+
+        const form = event.target;
+        const loginButton = document.getElementById('loginButton');
+        const mensagemErro = document.getElementById('mensagemErro');
+        
+        const data = {
+            login: form.login.value,
+            senha: form.senha.value
+        };
+
+        loginButton.disabled = true;
+        mensagemErro.textContent = '';
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json().then(data => ({ ok: response.ok, data })))
+        .then(({ ok, data }) => {
+            if (ok && data.status === 'ok') {
+                window.location.href = 'painel.php'; // Redireciona para o painel
+            } else {
+                mensagemErro.textContent = data.erro || 'Ocorreu um erro inesperado.';
+                loginButton.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Erro no login:', error);
+            mensagemErro.textContent = 'Não foi possível conectar ao servidor.';
+            loginButton.disabled = false;
+        });
+    });
+  </script>
 </body>
 </html>

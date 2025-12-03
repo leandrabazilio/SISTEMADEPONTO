@@ -17,7 +17,7 @@ try {
         session_start();
     }
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["erro" => "Erro ao conectar ao banco: " . $e->getMessage()]);
+    // Se a conexão falhar, interrompe a execução e exibe uma mensagem de erro clara.
+    die("<h1>Erro Crítico de Conexão</h1><p>Não foi possível conectar ao banco de dados. Verifique as credenciais e o status do servidor.</p><p>Detalhe do erro: " . $e->getMessage() . "</p>");
 }
 ?>

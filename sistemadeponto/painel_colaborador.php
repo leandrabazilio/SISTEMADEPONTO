@@ -1,31 +1,21 @@
 <?php
 
-session_start();
-
 require_once 'conexao.php'; 
 header('Content-Type: application/json');
 
-//  VERIFICAÇÃO DE SEGURANÇA
-// Se o usuário NÃO estiver logado ou não for um colaborador, redireciona para o login.
-
+// 1. VERIFICAÇÃO DE SEGURANÇA
+// Se o usuário NÃO estiver logado ou não for um colaborador, retorna um erro.
 if (!isset($_SESSION['usuario_id']) || $_SESSION['tipo_acesso'] !== 'Colaborador') {
     http_response_code(403);
     echo json_encode(["erro" => "Acesso negado"]);
     exit();
 }
 
-// Variáveis da sessão
-$id_colaborador = $_SESSION['usuario_id'];
-$nome_colaborador = $_SESSION['usuario_nome'];
-
-$mensagem = "";
-$pontos_do_dia = [];
-
-//  REGISTRO DE PONTO
-
+// 2. REGISTRO DE PONTO (Endpoint para POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo_registro'])) {
     $tipo = $_POST['tipo_registro'];
     $data_hora_atual = date('Y-m-d H:i:s'); // Captura a hora exata do servidor
+    $id_colaborador = $_SESSION['usuario_id'];
 
     $sql_insert = "INSERT INTO Pontos (funcionario_codigo, data_hora, tipo_registro) VALUES (:codigo, :data_hora, :tipo)";
 
@@ -36,33 +26,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo_registro'])) {
         $stmt_insert->bindParam(':tipo', $tipo);
         $stmt_insert->execute();
         
-        $mensagem = "<p style='color:green;'>Ponto de *" . ucfirst($tipo) . "* registrado com sucesso às $data_hora_atual!</p>";
+        // Formata o tipo de registro para uma leitura mais amigável
+        $tipo_formatado = ucfirst(str_replace('_', ' ', $tipo));
+        $hora_formatada = date('H:i:s', strtotime($data_hora_atual));
+
+        echo json_encode([
+            "status" => "ok", 
+            "mensagem" => "Ponto de '{$tipo_formatado}' registrado com sucesso às {$hora_formatada}!"
+        ]);
         
     } catch (PDOException $e) {
-        $mensagem = "<p style='color:red;'>Erro ao registrar ponto: " . $e->getMessage() . "</p>";
+        http_response_code(500);
+        echo json_encode(["erro" => "Erro ao registrar ponto: " . $e->getMessage()]);
     }
+    exit(); // Encerra o script após tratar o POST
 }
 
-// EXIBIÇÃO DO HISTÓRICO DIÁRIO 
-// Mostra os pontos que o colaborador já bateu HOJE.
-
-// Formata a data de hoje para ser usada na consulta SQL
-$hoje = date('Y-m-d');
-$sql_read = "SELECT data_hora, tipo_registro FROM Pontos 
-             WHERE funcionario_codigo = :codigo 
-             AND DATE(data_hora) = :hoje 
-             ORDER BY data_hora DESC"; 
-
-try {
+// 3. BUSCA DE HISTÓRICO (Endpoint para GET)
+// Se a requisição não for POST, assume-se que é para buscar o histórico do dia.
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $hoje = date('Y-m-d');
+    $id_colaborador = $_SESSION['usuario_id'];
+    $sql_read = "SELECT data_hora, tipo_registro FROM Pontos 
+                 WHERE funcionario_codigo = :codigo AND DATE(data_hora) = :hoje 
+                 ORDER BY data_hora DESC"; 
+    
     $stmt_read = $pdo->prepare($sql_read);
     $stmt_read->bindParam(':codigo', $id_colaborador);
     $stmt_read->bindParam(':hoje', $hoje);
     $stmt_read->execute();
     $pontos_do_dia = $stmt_read->fetchAll(PDO::FETCH_ASSOC);
-
-} catch (PDOException $e) {
-    // A falha na leitura não deve parar o sistema, apenas exibe um erro
-    $mensagem_read = "<p style='color:red;'>Erro ao carregar histórico: " . $e->getMessage() . "</p>";
+    
+    echo json_encode(["status" => "ok", "pontos" => $pontos_do_dia]);
+    exit();
 }
-
 ?>

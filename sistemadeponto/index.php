@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
             
             $mensagem_cadastro = "<p style='color:green;'>Cadastro realizado com sucesso! Use seu login e senha para entrar.</p>";
             
+            
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
                 $mensagem_cadastro = "<p style='color:red;'>Erro M3: O login '$login' já existe.</p>";
