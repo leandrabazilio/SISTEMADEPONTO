@@ -27,7 +27,7 @@ nav.menu-lateral{
 
     position: absolute;
     top: 65px;
-    left: 60px;
+    left: 0px;
     overflow: hidden;
     transition: .2s;
 }
