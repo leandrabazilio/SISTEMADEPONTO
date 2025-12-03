@@ -1,0 +1,76 @@
+@import "bootstrap-icons/font/bootstrap-icons";
+.topo{
+    width:100% ;
+    text-align: center;
+    background-color: #f48fb1;
+    padding: 20px;
+}
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+nav.menu-lateral{
+    height: calc(100% - 120px);
+    width: 60px;
+    background-color: #f48fb1;
+    padding: 40px 0 40px 0.5%;
+    box-shadow: 3px 0 0 #ffebee;
+
+    position: fixed;
+    top: 65px;
+    left: 0;
+    overflow: hidden;
+    transition: .2s;
+}
+nav.menu-lateral.expandir{
+    width: 300px;
+}
+.btn-expandir{
+    width: 100%;
+    padding-left: 10px;
+    height: 40px;
+}
+.btn-expandir > i{
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+ul{
+    height: 100%;
+    list-style-type: none;
+}
+ul li.nav-item{
+    transition: .3s;
+}
+ul li.ativo{
+    background:#e91e63 ;
+}
+ul li.nav-item:hover{
+    background: #e91e63;
+}
+ul li.nav-item a{
+    color:white;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 10px 4%;
+    display: flex;
+    margin-bottom: 30px;
+    line-height: 20px;
+}
+ul li.nav-item a .txt-link{
+    margin-left: 30px;
+    font-family: 'Times New Roman', Times, serif;
+    opacity: 0;
+    transition: .5s;
+}
+nav.menu-lateral.expandir .txt-link{
+    margin-left: 40px;
+    opacity: 1;
+}
+ul li.nav-item a .icon > i{
+    font-size: 20px;
+    margin-left: 10px;
+}
