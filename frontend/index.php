@@ -12,4 +12,4 @@
     </form>
     <p><a href="../sistemadeponto/index.php">Cadastre-se</a></p>
 </body>
-</html>
+</html>a
