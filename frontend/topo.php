@@ -9,7 +9,7 @@
         <header>
             <div class="topo">
                 <div class="container-fluid">
-                    <h1>SISTEMAS PB - Sistema de Ponto</h1> 
+                    <h1 style="color: white; font-family: 'Times New Roman', Times, serif;">Sistema de Ponto</h1> 
                 </div>
             </div>
         </header>
