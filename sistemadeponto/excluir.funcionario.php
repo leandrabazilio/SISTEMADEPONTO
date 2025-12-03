@@ -12,10 +12,9 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['tipo_acesso'] !== 'Administrad
     exit;
 }
 
-// Só permite DELETE ou POST com _method = DELETE
 $method = $_SERVER['REQUEST_METHOD'];
 
-if ($method !== 'DELETE' && !($method === 'POST' && ($_POST['_method'] ?? '') === 'DELETE')) {
+if ($method !== 'POST') { // Aceita requisições POST para exclusão
     http_response_code(405);
     echo json_encode(["erro" => "Método não permitido"]);
     exit;

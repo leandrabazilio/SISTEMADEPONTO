@@ -1,67 +1,52 @@
 <?php
 
-require_once 'conexao.php'; 
+require_once 'conexao.php'; // Inclui a conexão e inicia a sessão
+
 header('Content-Type: application/json');
 
-// Redireciona se já estiver logado
-if (isset($_SESSION['usuario_id'])) {
-    echo json_encode([
-        "status" => "ok",
-        "mensagem" => "Usuário já está logado",
-        "usuario" => [
-            "id" => $_SESSION['usuario_id'],
-            "nome" => $_SESSION['usuario_nome'],
-            "tipo" => $_SESSION['tipo_acesso']
-        ]
-    ]);
-        exit;
-}
+// 1. Obter os dados da requisição
+$data = json_decode(file_get_contents("php://input"), true);
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(["erro" => "Método não permitido"]);
+$login = $data['login'] ?? null;
+$senha = $data['senha'] ?? null;
+
+if (!$login || !$senha) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['erro' => 'Usuário e senha são obrigatórios.']);
     exit;
 }
 
-$data = json_decode(file_get_contents("php://input"), true); // O segundo parâmetro deve ser 'true' para obter um array associativo
-
-$login_digitado = trim($data["login"] ?? "");
-$senha_digitada = $data["senha"] ?? "";
-
+// 2. Buscar o usuário no banco de dados
 try {
-    $sql = "SELECT codigo, nome, senha, tipo_usuario FROM funcionarios WHERE login = :login";
-
+    $sql = "SELECT codigo, nome, senha, tipo_usuario FROM Funcionarios WHERE login = :login";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':login', $login_digitado);
+    $stmt->bindParam(':login', $login);
     $stmt->execute();
+
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Verifica o usuário e a senha usando o hash
-    if ($usuario && password_verify($senha_digitada, $usuario['senha'])) {
+    // 3. Verificar a senha
+    // Se o usuário foi encontrado E a senha digitada corresponde à senha hash no banco
+    if ($usuario && password_verify($senha, $usuario['senha'])) {
+        
+        // 4. Autenticação bem-sucedida: Salvar dados na sessão
+        $_SESSION['usuario_id'] = $usuario['codigo'];
+        $_SESSION['usuario_nome'] = $usuario['nome'];
+        $_SESSION['tipo_acesso'] = $usuario['tipo_usuario'];
 
-            $_SESSION['usuario_id'] = $usuario['codigo'];
-            $_SESSION['usuario_nome'] = $usuario['nome'];
-            $_SESSION['tipo_acesso'] = $usuario['tipo_usuario'];
-            
-        echo json_encode([
-            "status" => "ok",
-            "mensagem" => "Login realizado com sucesso",
-            "usuario" => [
-                "id" => $usuario['codigo'],
-                "nome" => $usuario['nome'],
-                "tipo" => $usuario['tipo_usuario']
-            ]
-            ]);
+        // Envia resposta de sucesso para o frontend
+        echo json_encode(['status' => 'ok']);
         exit;
+
     } else {
-        http_response_code(401);
-        echo json_encode(["erro" => "Login ou senha incorreta"]);
+        // Usuário não encontrado ou senha incorreta
+        http_response_code(401); // Unauthorized
+        echo json_encode(['erro' => 'Usuário ou senha inválidos.']);
         exit;
     }
 
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["erro" => "Erro no servidor: " . $e->getMessage()]);
+    http_response_code(500); // Internal Server Error
+    echo json_encode(['erro' => 'Erro no servidor: ' . $e->getMessage()]);
     exit;
 }
-?>

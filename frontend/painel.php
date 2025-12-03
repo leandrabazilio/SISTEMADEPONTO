@@ -20,15 +20,25 @@ include_once "menu.php";
 $pagina = $_GET['pg'] ?? 'home';
 
 // Cria um array com as páginas permitidas para evitar inclusão de arquivos indesejados.
-$paginas_permitidas = ['home', 'pontos', 'perfil'];
+$paginas_permitidas = ['home', 'pontos', 'perfil', 'gerenciar'];
+$paginas_admin = ['gerenciar']; // Páginas que só o admin pode acessar
 
-if (in_array($pagina, $paginas_permitidas)) {
+if (!in_array($pagina, $paginas_permitidas)) {
+    // Se a página não existe, mostra erro 404
+    $pagina_a_incluir = '404.php';
+    echo "<main class='conteudo'><h2>Erro 404: Página não encontrada</h2></main>";
+} elseif (in_array($pagina, $paginas_admin) && $_SESSION['tipo_acesso'] !== 'Administrador') {
+    // Se um colaborador tenta acessar uma página de admin, mostra acesso negado
+    echo "<main class='conteudo'><h2>Acesso Negado</h2><p>Você não tem permissão para acessar esta página.</p></main>";
+} else {
     // Se a página for permitida, inclui o arquivo .php correspondente.
     include_once $pagina . '.php';
-} else {
-    // Se a página não for encontrada ou não for permitida, inclui a página de erro 404 ou a home.
-    echo "<main class='conteudo'><h2>Erro 404: Página não encontrada</h2></main>";
 }
 
 // Inclui o rodapé da página
 include_once "rodape.php";
+?>
+
+<!-- Scripts que antes estavam no menu.php -->
+<script src="menu.js"></script>
+<script src="click.js"></script>

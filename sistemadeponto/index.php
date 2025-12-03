@@ -8,9 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
     $nome = trim($_POST['nome']);
     $login = trim($_POST['login']);
     $senha_pura = $_POST['senha'];
-    $tipo_usuario = 'Colaborador'; 
+    $tipo_usuario = $_POST['tipo_usuario'] ?? 'Colaborador'; // Captura o tipo de usuário do formulário
 
-    if (!empty($nome) && !empty($login) && !empty($senha_pura)) {
+    if (!empty($nome) && !empty($login) && !empty($senha_pura) && !empty($tipo_usuario)) {
         // GERAÇÃO DO HASH SEGURO
         $senha_hash = password_hash($senha_pura, PASSWORD_DEFAULT); 
 

@@ -87,6 +87,14 @@
                 <label for="senha">Senha:</label>
                 <input type="password" id="senha" name="senha" required>
             </div>
+            <div class="form-group">
+                <label for="tipo_usuario">Tipo de Usuário:</label>
+                <select id="tipo_usuario" name="tipo_usuario" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <option value="" disabled selected>Selecione o cargo</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Colaborador">Colaborador</option>
+                </select>
+            </div>
             <button type="submit" >Cadastrar</button>
         </form>
         <p style="text-align: center; margin-top: 20px;"><a href="index.php">Já tem uma conta? Faça login aqui.</a></p>

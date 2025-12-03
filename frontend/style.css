@@ -1,15 +1,4 @@
 @import "bootstrap-icons/font/bootstrap-icons";
-.topo{
-    width:100% ;
-    text-align: center;
-    background-color: #f48fb1;
-    padding: 20px;
-}
-
-div.container-fluid h1 {
-    color: white;
-    font-family: 'Times New Roman', Times, serif;
-}
 *{
     margin:0;
     padding: 0;

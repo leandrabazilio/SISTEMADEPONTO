@@ -1,18 +1,27 @@
 <?php
 require_once '../sistemadeponto/conexao.php';
 
-$usuario_id = $_SESSION['usuario_id'];
+// Determina qual usuário editar.
+// Se um 'id' for passado na URL E o usuário logado for um Administrador, edita esse 'id'.
+// Caso contrário, o usuário edita o próprio perfil.
+$id_para_editar = $_SESSION['usuario_id']; // Padrão: editar a si mesmo
+$is_admin_editando_outro = false;
+
+if (isset($_GET['id']) && $_SESSION['tipo_acesso'] === 'Administrador') {
+    $id_para_editar = filter_var($_GET['id'], FILTER_VALIDATE_INT);
+    $is_admin_editando_outro = true;
+}
+
 $nome_usuario = '';
 $login_usuario = '';
 $tipo_acesso = '';
 $mensagem_erro = '';
 $mensagem_sucesso = '';
 
-// Buscar dados do usuário logado
 try {
     $sql = "SELECT codigo, nome, login, tipo_usuario FROM Funcionarios WHERE codigo = :codigo";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':codigo', $usuario_id);
+    $stmt->bindParam(':codigo', $id_para_editar);
     $stmt->execute();
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -31,7 +40,7 @@ try {
 
 <main class="conteudo">
     <div class="content-card">
-        <h2>Meu Perfil</h2>
+        <h2><?php echo $is_admin_editando_outro ? 'Editar Perfil de Colaborador' : 'Meu Perfil'; ?></h2>
     
         <?php if (!empty($mensagem_erro)): ?>
             <div class="message error"><?php echo $mensagem_erro; ?></div>
@@ -40,7 +49,7 @@ try {
         <div id="feedbackMessage" class="message" style="display: none;"></div>
     
         <form id="formPerfil" class="form-perfil">
-            <input type="hidden" name="codigo" value="<?php echo $usuario_id; ?>">
+            <input type="hidden" name="codigo" value="<?php echo $id_para_editar; ?>">
             
             <label for="nome">Nome:</label>
             <input type="text" id="nome" name="nome" value="<?php echo $nome_usuario; ?>" required>
@@ -50,9 +59,20 @@ try {
             <small>O login não pode ser alterado.</small>
             <br><br>
     
-            <label for="tipo_usuario">Tipo de Usuário:</label>
-            <input type="text" id="tipo_usuario" name="tipo_usuario" value="<?php echo $tipo_acesso; ?>" disabled>
-            <small>O tipo de usuário não pode ser alterado.</small>
+            <label for="tipo_usuario">Tipo de Usuário:</label>            
+            <?php if ($_SESSION['tipo_acesso'] === 'Administrador'): ?>
+                <select id="tipo_usuario" name="tipo_usuario">
+                    <option value="Administrador" <?php echo ($tipo_acesso === 'Administrador') ? 'selected' : ''; ?>>
+                        Administrador
+                    </option>
+                    <option value="Colaborador" <?php echo ($tipo_acesso === 'Colaborador') ? 'selected' : ''; ?>>
+                        Colaborador
+                    </option>
+                </select>
+            <?php else: ?>
+                <input type="text" id="tipo_usuario" name="tipo_usuario" value="<?php echo $tipo_acesso; ?>" disabled>
+            <?php endif; ?>
+            <small>O tipo de usuário só pode ser alterado por um administrador.</small>
             <br><br>
     
             <button type="submit">Salvar Alterações</button>
@@ -71,10 +91,11 @@ document.getElementById('formPerfil').addEventListener('submit', function(event)
 
     const data = {
         codigo: form.codigo.value,
-        nome: form.nome.value
+        nome: form.nome.value,
+        tipo_usuario: form.tipo_usuario ? form.tipo_usuario.value : null // Envia o tipo de usuário se o campo existir
     };
 
-    fetch('../sistemadeponto/atualizar_perfil.php', {
+    fetch('../sistemadeponto/editar_funcionario.php', {
         method: 'POST', // Usando POST para simplicidade, mas PUT seria mais RESTful
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
