@@ -1,0 +1,6 @@
+main.home {
+  margin-left: 60px; /* espaço para não ficar embaixo do menu */
+  padding: 20px;
+  background: #fff;
+  min-height: 400px;
+}
