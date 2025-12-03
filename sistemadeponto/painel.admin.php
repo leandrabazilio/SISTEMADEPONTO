@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once 'conexao.php'; 
 date_default_timezone_set('America/Sao_Paulo'); // Garante que a hora da exibição está correta
 
