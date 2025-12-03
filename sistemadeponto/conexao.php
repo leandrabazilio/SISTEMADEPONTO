@@ -4,7 +4,7 @@
 date_default_timezone_set('America/Sao_Paulo');
 
 $host = 'localhost'; 
-$dbname = 'db_pontos'; 
+$dbname = 'controle_ponto'; 
 $user = 'root';        // Seu usuário do MySQL
 $password = '';        // Sua senha do MySQL 
 
@@ -17,7 +17,7 @@ try {
         session_start();
     }
 } catch (PDOException $e) {
-    // Se a conexão falhar, exibe uma mensagem crítica
-    die("<h1>Erro Crítico de Conexão com o Banco de Dados:</h1><p>" . $e->getMessage() . "</p>");
+    http_response_code(500);
+    echo json_encode(["erro" => "Erro ao conectar ao banco: " . $e->getMessage()]);
 }
 ?>

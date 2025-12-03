@@ -37,28 +37,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
          $mensagem_cadastro = "<p style='color:red;'>Erro M1: Preencha todos os campos.</p>";
     }
 }
-
-// RESTANTE DO HTML/FORMULÁRIO
 ?>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head><meta charset="UTF-8"><title>Página Inicial</title></head>
-<body>
-    <h1>SISTEMAS PB - Sistema de Ponto</h1>
-    <p>Acesse aqui para bater seu ponto ou vá para o Cadastro se for novo.</p>
-    
-    <a href="login.php">Fazer Login / Bater Ponto</a>
-    <hr>
-    
-    <h2>Novo Cadastro</h2>
-    <?php echo $mensagem_cadastro; ?>
-    
-    <form method="POST" action="index.php">
-        <input type="hidden" name="acao" value="cadastrar">
-        <label>Nome:</label><input type="text" name="nome" required><br>
-        <label>Login:</label><input type="text" name="login" required><br>
-        <label>Senha:</label><input type="password" name="senha" required><br>
-        <button type="submit">Criar Cadastro</button>
-    </form>
-</body>
-</html>

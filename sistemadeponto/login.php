@@ -1,70 +1,68 @@
-
 <?php
 
 require_once 'conexao.php'; 
+header('Content-Type: application/json');
+session_start();
 
 // Redireciona se já estiver logado
 if (isset($_SESSION['usuario_id'])) {
-    if ($_SESSION['tipo_acesso'] === 'Administrador') {
-        header('Location: painel_admin.php');
-    } else {
-        header('Location: painel_colaborador.php');
-    }
-    exit();
+    echo json_encode([
+        "status" => "ok",
+        "mensagem" => "Usuário já está logado",
+        "usuario" => [
+            "id" => $_SESSION['usuario_id'],
+            "nome" => $_SESSION['usuario_nome'],
+            "tipo" => $_SESSION['tipo_acesso']
+        ]
+    ]);
+        exit;
 }
 
-$erro_login = "";
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["erro" => "Método não permitido"]);
+    exit;
+}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $login_digitado = trim($_POST['login']);
-    $senha_digitada = $_POST['senha'];
+$data = json_decode(file_get_contents("php://input", true));
 
-    $sql = "SELECT codigo, nome, senha, tipo_usuario FROM Funcionarios WHERE login = :login";
-    
-    try {
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':login', $login_digitado);
-        $stmt->execute();
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+$login_digitado = trim ($data["login"] ?? "");
+$senha_digitada = $data["senha"] ?? "";
 
-        // Verifica o usuário E a senha usando o hash
-        if ($usuario && password_verify($senha_digitada, $usuario['senha'])) {
+try {
+    $sql = "SELECT codigo, nome, senha, tipo_usuario FROM funcionarios WHERE login = :login";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':login', $login_digitado);
+    $stmt->execute();
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Verifica o usuário e a senha usando o hash
+    if ($usuario && password_verify($senha_digitada, $usuario['senha'])) {
+
             $_SESSION['usuario_id'] = $usuario['codigo'];
             $_SESSION['usuario_nome'] = $usuario['nome'];
             $_SESSION['tipo_acesso'] = $usuario['tipo_usuario'];
             
-            // Redirecionamento após sucesso
-            if ($usuario['tipo_acesso'] === 'Administrador') {
-                header('Location: painel_admin.php');
-            } else {
-                header('Location: painel_colaborador.php');
-            }
-            exit();
-            
-        } else {
-            $erro_login = "Login ou senha incorretos. Tente novamente.";
-        }
-        
-    } catch (PDOException $e) {
-        $erro_login = "Erro na autenticação: " . $e->getMessage();
+        echo json_encode([
+            "status" => "ok",
+            "mensagem" => "Login realizado com sucesso",
+            "usuario" => [
+                "id" => $usuario['codigo'],
+                "nome" => $usuario['nome'],
+                "tipo" => $usuario['tipo_usuario']
+            ]
+            ]);
+        exit;
+    } else {
+        http_response_code(401);
+        echo json_encode(["erro" => "Login ou senha incorreta"]);
+        exit;
     }
+
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(["erro" => "Erro no servidor: " . $e->getMessage()]);
+    exit;
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<head><meta charset="UTF-8"><title>Login</title></head>
-<body>
-    <h2>Acesso ao Sistema</h2>
-    <?php if ($erro_login): ?><p style="color:red;"><?php echo $erro_login; ?></p><?php endif; ?>
-    
-    <form method="POST" action="login.php">
-        <label>Login:</label><input type="text" name="login" required><br>
-        <label>Senha:</label><input type="password" name="senha" required><br>
-        <button type="submit">Entrar</button>
-    </form>
-    
-    <p><a href="index.php">Voltar</a></p>
-</body>
-</html>
-

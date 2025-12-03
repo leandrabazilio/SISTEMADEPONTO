@@ -1,12 +1,14 @@
 <?php
 
 require_once 'conexao.php'; 
+header('Content-Type: application/json');
 
 //  VERIFICAÇÃO DE SEGURANÇA
 // Se o usuário NÃO estiver logado ou não for um colaborador, redireciona para o login.
 
 if (!isset($_SESSION['usuario_id']) || $_SESSION['tipo_acesso'] !== 'Colaborador') {
-    header('Location: login.php');
+    http_response_code(403);
+    echo json_encode(["erro" => "Acesso negado"]);
     exit();
 }
 
@@ -62,51 +64,3 @@ try {
 }
 
 ?>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Painel do Colaborador</title>
-</head>
-<body>
-    <h1>Bem-vindo(a), <?php echo $nome_colaborador; ?>!</h1>
-    <p><a href="logout.php">Sair</a></p>
-    <hr>
-
-    <h2>Registro de Ponto</h2>
-    <?php echo $mensagem; ?>
-
-    <form method="POST" action="painel_colaborador.php">
-        <label for="registro">Selecione o tipo de registro:</label>
-        <select name="tipo_registro" id="registro" required>
-            <option value="entrada">Entrada</option>
-            <option value="saida">Saída</option>
-            <option value="inicio_pausa">Início de Pausa</option>
-            <option value="fim_pausa">Fim de Pausa</option>
-        </select>
-        <button type="submit">BATER PONTO AGORA</button>
-    </form>
-    
-    <hr>
-    
-    <h2>Seu Histórico de Hoje (<?php echo $hoje; ?>)</h2>
-    <?php if (empty($pontos_do_dia)): ?>
-        <p>Nenhum ponto registrado hoje.</p>
-    <?php else: ?>
-        <table>
-            <thead>
-                <tr><th>Hora</th><th>Tipo</th></tr>
-            </thead>
-            <tbody>
-                <?php foreach ($pontos_do_dia as $ponto): ?>
-                <tr>
-                    <td><?php echo date('H:i:s', strtotime($ponto['data_hora'])); ?></td>
-                    <td><?php echo ucfirst($ponto['tipo_registro']); ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
-    <?php if (isset($mensagem_read)) echo $mensagem_read; ?>
-</body>
-</html>
